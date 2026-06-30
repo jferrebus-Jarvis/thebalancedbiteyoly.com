@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Balanced Bite — Tierra Cálida</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --beige:#F5EFE0;
+      --beige2:#EDE3CF;
+      --brown:#8B6B4A;
+      --brown-dark:#5C4033;
+      --brown-light:#C4A882;
+      --green:#444932;
+      --green-light:#444932;
+      --green-dark:#444932;
+      --cream:#FDFAF4;
+      --text:#3A2E22;
+    }
+    body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);}
+
+    nav{padding:18px 60px;display:flex;align-items:center;justify-content:space-between;background:var(--green-dark);border-bottom:none;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+    .nav-logo img{height:52px;border-radius:50%;border:2px solid var(--brown);}
+    .nav-links a{margin-left:28px;text-decoration:none;color:#fff;font-size:0.85rem;font-weight:600;}
+    .nav-links a:hover{color:var(--green-dark);}
+    .nav-cta{background:#fff;color:#fff;padding:10px 22px;border-radius:50px;text-decoration:none;font-size:0.82rem;font-weight:700;background:var(--green-dark);color:var(--green-dark);padding:10px 22px;border-radius:50px;text-decoration:none;font-size:0.82rem;font-weight:700;}
+
+    .hero{display:grid;grid-template-columns:1fr 1fr;min-height:92vh;background:var(--beige);gap:0;}
+    .hl{padding:80px 60px;display:flex;flex-direction:column;justify-content:center;}
+    .hero-badge{display:none;}
+    h1{font-family:'Playfair Display',serif;font-size:5.2rem;line-height:0.92;font-style:normal;color:var(--brown-dark);margin-bottom:24px;}
+    h1 em{color:var(--brown-dark);font-style:normal;}
+    .hero-sub{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown);font-style:italic;margin-bottom:20px;}
+    .hero-p{font-size:0.95rem;line-height:1.9;color:#7A6050;max-width:400px;margin-bottom:36px;}
+    .hero-btns{display:flex;flex-direction:row;gap:12px;align-items:center;flex-wrap:wrap;}
+    .btn-green{background:var(--green-dark);color:#fff;padding:14px 30px;border-radius:50px;font-weight:700;font-size:0.85rem;text-decoration:none;}
+    .btn-brown{background:var(--brown);color:#fff;padding:14px 30px;border-radius:50px;font-weight:700;font-size:0.85rem;text-decoration:none;}
+
+    .hr{background:var(--beige);display:flex;align-items:center;justify-content:center;position:relative;}
+    .logo-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:40px;}
+    .logo-wrap img{width:min(420px,88vw);height:min(420px,88vw);object-fit:cover;border-radius:50%;box-shadow:0 20px 60px rgba(200,146,42,0.18);}
+
+    
+    
+    .val:last-child{border-right:none;}
+    
+    
+    
+
+    .menu{padding:100px 60px;background:var(--green-dark);}
+    .sec-label{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--green-dark);font-weight:700;margin-bottom:14px;}
+    h2.sec-title{font-family:'Playfair Display',serif;font-size:3rem;color:#fff;margin-bottom:8px;}
+    h2.sec-title em{color:#C8E6C9;font-style:italic;}
+    .sec-sub{font-size:1.05rem;color:#F5E6C8;margin-bottom:52px;}
+    .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .mc{background:var(--beige);border-radius:20px;padding:32px 24px;border:2px solid transparent;transition:all 0.2s;}
+    .mc:hover{border-color:var(--brown-light);box-shadow:0 8px 30px rgba(139,107,74,0.12);}
+    .mc-emoji{font-size:2.4rem;margin-bottom:14px;display:flex;align-items:center;justify-content:center;}
+    .mc-cat{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--green-dark);font-weight:700;margin-bottom:8px;}
+    .mc-name{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--brown-dark);margin-bottom:10px;}
+    .mc-desc{font-size:0.8rem;line-height:1.7;color:#7A6050;margin-bottom:22px;}
+    .mc-footer{display:flex;align-items:center;justify-content:space-between;}
+    .mc-price{font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--brown);}
+
+    /* === CART === */
+    #cart-fab{display:none;}
+    #cart-fab:hover{transform:scale(1.05);}
+    #cart-count{background:#C8922A;color:#fff;border-radius:50%;width:22px;height:22px;font-size:0.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
+    #cart-drawer{position:fixed;top:70px;right:16px;width:340px;max-width:calc(100vw - 32px);background:#FDFAF4;border-radius:20px;box-shadow:0 16px 60px rgba(0,0,0,0.18);z-index:1000;transform:translateY(-16px);opacity:0;pointer-events:none;transition:transform 0.28s cubic-bezier(0.4,0,0.2,1),opacity 0.28s ease;padding:20px 20px 24px;display:flex;flex-direction:column;max-height:50vh;}
+    #cart-items{overflow-y:auto;flex:1;max-height:28vh;padding-right:4px;}
+    #cart-drawer.open{transform:translateY(0);opacity:1;pointer-events:all;}
+    .cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+    .cart-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--brown-dark);font-weight:700;}
+    .cart-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--brown);}
+    .cart-items{flex:1;overflow-y:auto;margin-bottom:12px;scrollbar-width:none;}
+    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0E8D8;gap:8px;}
+    .cart-item-name{font-size:0.82rem;font-weight:600;color:var(--brown-dark);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cart-item-qty{display:flex;align-items:center;gap:10px;}
+    .qty-btn{background:var(--beige2);border:none;width:24px;height:24px;border-radius:50%;font-size:0.85rem;cursor:pointer;font-weight:700;color:var(--brown-dark);flex-shrink:0;}
+    .cart-item-price{font-size:0.88rem;font-weight:700;color:var(--green-dark);min-width:50px;text-align:right;}
+    .cart-empty{text-align:center;color:#aaa;padding:30px 0;font-size:0.9rem;}
+    .cart-total{border-top:2px solid #F0E8D8;padding-top:10px;text-align:right;margin-bottom:14px;}
+    .cart-wa-btn{display:block;width:100%;background:#25D366;color:#fff;text-align:center;padding:14px;border-radius:12px;font-weight:700;font-size:1rem;text-decoration:none;letter-spacing:0.5px;}
+    .mc-btn{background:var(--green-dark);color:#fff;padding:8px 18px;border-radius:50px;font-size:0.75rem;font-weight:700;border:none;cursor:pointer;}
+
+
+    .about{background:var(--cream);padding:100px 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+    .about-logo{width:300px;height:300px;object-fit:contain;border-radius:50%;background:rgba(255,255,255,0.5);padding:20px;}
+    .about-content h2{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--brown-dark);margin-bottom:20px;}
+    .about-content h2 em{color:var(--green-dark);font-style:italic;}
+    .about-content p{font-size:1.05rem;line-height:1.9;color:#7A6050;margin-bottom:16px;}
+    .sig{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--brown);font-style:italic;margin-top:20px;}
+
+    .cta{background:var(--green-dark);padding:80px 60px;text-align:center;}
+    .cta h2{font-family:'Playfair Display',serif;font-size:3.2rem;color:#fff;margin-bottom:16px;}
+    .cta p{font-size:0.9rem;color:rgba(255,255,255,0.65);margin-bottom:36px;}
+    .btn-beige{background:var(--beige);color:var(--brown-dark);padding:15px 48px;border-radius:50px;font-size:0.88rem;font-weight:700;text-decoration:none;display:inline-block;}
+
+    footer{background:var(--brown-dark);padding:30px 60px;display:flex;justify-content:space-between;font-size:0.74rem;color:rgba(253,250,244,0.35);}
+
+    @media(max-width:768px){
+      nav{padding:14px 20px;}
+      .nav-links{display:none;}
+      #burger{display:none;}
+      .hero{grid-template-columns:1fr;display:flex;flex-direction:column-reverse;}
+      .hl{padding:40px 24px 20px;}
+      h1{font-size:2.8rem;}
+      .hr{height:auto;min-height:unset;padding:40px 20px 20px;flex-direction:column;gap:0;}
+      .logo-wrap{padding:0;height:auto;}
+      .logo-wrap img{width:min(320px,82vw);height:min(320px,82vw);}
+      .hero-icons{margin-top:20px;gap:14px;}
+      
+      .menu{padding:60px 20px;background:var(--green-dark);}
+      .menu-grid{grid-template-columns:1fr;}
+      .about{grid-template-columns:1fr;padding:60px 20px;gap:32px;}
+      .cta{padding:60px 20px;}
+      footer{flex-direction:column;gap:8px;padding:20px;}
+    }
+  
+    /* ABOUT SECTION */
+    .about-section{background:#FDFAF4;padding:80px 60px;display:flex;gap:60px;align-items:center;flex-wrap:wrap;}
+    .about-photo{width:320px;height:420px;border-radius:20px;overflow:hidden;border:4px solid #C8922A;flex-shrink:0;box-shadow:0 20px 50px rgba(0,0,0,0.3);}
+    .about-photo img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+    .about-txt .about-label{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:#C8922A;font-weight:700;margin-bottom:10px;}
+    .about-txt h2{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--brown-dark);margin-bottom:20px;font-style:normal;}
+    .about-txt p{color:#7A6050;font-size:1.05rem;line-height:1.9;margin-bottom:12px;}
+    .about-sig{font-family:'Playfair Display',serif;font-size:2rem;color:#C8922A;font-style:italic;margin-top:20px;}
+    @media(max-width:768px){
+      .about-section{padding:50px 20px;flex-direction:column;text-align:center;}
+      .about-photo{width:260px;height:340px;margin:0 auto;}
+    }
+  
+    #rotating-word{transition:opacity 0.3s ease;}
+    .badge{cursor:default;}
+
+  
+    .menu-section-label{font-family:'Playfair Display',serif;font-size:1.6rem;color:#fff;font-weight:700;margin-bottom:6px;margin-top:12px;}
+    .menu-section-sub{font-size:1.0rem;color:#F5E6C8;margin-bottom:24px;line-height:1.6;}
+
+      .badge{display:none;}
+  
+    .about-badges{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 16px;}
+    .abadge{background:rgba(58,107,53,0.1);border:1px solid rgba(58,107,53,0.25);color:var(--green-dark);padding:6px 14px;border-radius:50px;font-size:0.72rem;font-weight:700;letter-spacing:0.5px;}
+    
+    .istrip-item:last-child{border-right:none;}
+    
+    
+    @media(max-width:600px){}
+
+  
+    
+    
+    
+    
+
+  
+    .hr{display:flex;flex-direction:column;align-items:center;gap:20px;}
+    
+    
+    
+    
+
+  
+    .icon-bar{display:flex;justify-content:center;align-items:flex-start;gap:0;background:#fff;border-top:1px solid rgba(58,107,53,0.12);border-bottom:1px solid rgba(58,107,53,0.12);padding:20px 0;}
+    .ibar-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 28px;border-right:1px solid rgba(196,168,130,0.3);}
+    .ibar-item:last-child{border-right:none;}
+    .ibar-emoji{font-size:1.6rem;}
+    .ibar-label{font-size:0.6rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--green-dark);}
+    @media(max-width:600px){.ibar-item{padding:0 14px;}.ibar-label{font-size:0.52rem;letter-spacing:0.6px;}}
+
+  
+    .hero-icons{display:flex;flex-direction:row;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+    .hico{display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .hico-emoji{font-size:1.3rem;}
+    .hico-label{font-size:0.56rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--green-dark);white-space:nowrap;}
+  
+    /* HAMBURGER MENU */
+    .bline{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:all 0.3s;}
+    #burger{display:flex;}
+    .mobile-nav{display:none;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:var(--green-dark);padding:20px 24px 24px;z-index:999;border-top:1px solid rgba(255,255,255,0.15);box-shadow:0 8px 32px rgba(0,0,0,0.25);}
+    .mobile-nav a{color:#fff;text-decoration:none;font-size:1rem;font-weight:600;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);display:block;}
+    .mobile-nav a:last-child{border-bottom:none;}
+    .mobile-nav.open{display:flex;}
+
+  </style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo" style="display:flex;align-items:center;gap:14px;">
+    <img src="logo.jpg" alt="The Balanced Bite">
+    <button id="burger" onclick="toggleMobileMenu()" aria-label="Menu" style="flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;">
+      <span class="bline"></span><span class="bline"></span><span class="bline"></span>
+    </button>
+  </div>
+  <div class="nav-links">
+    <a href="#menu" data-key="nav_menu">Menú</a><a href="#nosotros" data-key="nav_nosotros">Nosotros</a><a href="https://wa.me/18325402505?text=Hola%2C%20me%20gustar%C3%ADa%20hacer%20un%20pedido%20de%20%2ACatering%2A%20con%20The%20Balanced%20Bite.%20%F0%9F%8D%BD%EF%B8%8F%0A%0A%E2%80%A2%20%C2%BFPara%20cu%C3%A1ntas%20personas%3A%0A%E2%80%A2%20%C2%BFFecha%20del%20evento%3A%0A%E2%80%A2%20%C2%BFQu%C3%A9%20productos%20desea%3A%0A%E2%80%A2%20%C2%BFLugar%20de%20entrega%3A%0A%0AGracias%21" target="_blank" data-key="nav_catering">Catering</a><a href="#" onclick="toggleCart();return false;" data-key="nav_pedido">Ver Carrito / Hacer Pedido</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div style="display:flex;align-items:center;gap:6px;color:#fff;font-size:0.75rem;font-weight:600;">
+      <span id="lang-es" style="cursor:pointer;font-weight:800;opacity:1;" onclick="setLang('es')">ES</span>
+      <span style="opacity:0.5;">|</span>
+      <span id="lang-en" style="cursor:pointer;font-weight:400;opacity:0.7;" onclick="setLang('en')">EN</span>
+    </div>
+    <button onclick="toggleCart()" style="background:#fff;color:var(--green-dark);border:none;border-radius:50px;padding:10px 20px;font-size:0.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;">🛒 <span id="nav-cart-count" style="background:var(--green-dark);color:#fff;border-radius:50%;width:22px;height:22px;font-size:0.7rem;display:flex;align-items:center;justify-content:center;">0</span></button>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#menu" data-key="nav_menu" onclick="closeMobileMenu()">Menú</a>
+  <a href="#nosotros" data-key="nav_nosotros" onclick="closeMobileMenu()">Nosotros</a>
+  <a href="https://wa.me/18325402505?text=Hola%2C%20me%20gustar%C3%ADa%20hacer%20un%20pedido%20de%20%2ACatering%2A%20con%20The%20Balanced%20Bite.%20%F0%9F%8D%BD%EF%B8%8F%0A%0A%E2%80%A2%20%C2%BFPara%20cu%C3%A1ntas%20personas%3A%0A%E2%80%A2%20%C2%BFFecha%20del%20evento%3A%0A%E2%80%A2%20%C2%BFQu%C3%A9%20productos%20desea%3A%0A%E2%80%A2%20%C2%BFLugar%20de%20entrega%3A%0A%0AGracias%21" target="_blank" data-key="nav_catering" onclick="closeMobileMenu()">Catering</a>
+  <a href="#" onclick="toggleCart();closeMobileMenu();return false;" data-key="nav_pedido">Ver Carrito / Hacer Pedido</a>
+</div>
+
+<section class="hero">
+  <div class="hl">
+    <h1>The<br><em>Balanced</em><br>Bite</h1>
+    <div class="hero-sub" data-es="El Bocado Balanceado by Chef Yoly" data-en="The Balanced Bite by Chef Yoly">El Bocado Balanceado by Chef Yoly</div>
+    <p class="hero-p" data-es="En The Balanced Bite, creemos que comer saludable debe ser delicioso, práctico y nutritivo. Elaboramos cada producto con ingredientes reales, libres de gluten, sin químicos, aditivos ni preservativos. Desde comidas listas para disfrutar hasta opciones congeladas, ofrecemos alimentos preparados con calidad, sabor y dedicación. Nuestra misión es ayudarte a disfrutar una alimentación equilibrada sin renunciar al placer de comer bien." data-en="At The Balanced Bite, we believe eating healthy should be delicious, practical, and nutritious. We craft every product with real ingredients — gluten-free, no chemicals, no additives, no preservatives. From ready-to-enjoy meals to frozen options, we offer food made with quality, flavor, and dedication. Our mission is to help you enjoy balanced nutrition without giving up the pleasure of eating well.">En The Balanced Bite, creemos que comer saludable debe ser delicioso, práctico y nutritivo. Elaboramos cada producto con ingredientes reales, libres de gluten, sin químicos, aditivos ni preservativos. Desde comidas listas para disfrutar hasta opciones congeladas, ofrecemos alimentos preparados con calidad, sabor y dedicación. Nuestra misión es ayudarte a disfrutar una alimentación equilibrada sin renunciar al placer de comer bien.</p>
+    <div class="hero-btns">
+      <a href="#" onclick="toggleCart();return false;" class="btn-green" data-es="Hacer Pedido / Ver Carrito" data-en="Order / View Cart">Hacer Pedido / Ver Carrito</a>
+      <a href="#menu" class="btn-brown" data-es="Ver Menú" data-en="View Menu">Ver Menú</a>
+    </div>
+  </div>
+  <div class="hr">
+    <div class="logo-wrap"><img src="logo.jpg" alt="The Balanced Bite"></div>
+    <div class="hero-icons">
+      <div class="hico"><span class="hico-emoji">🌾</span><span class="hico-label" data-es="Sin Gluten" data-en="Gluten Free">Sin Gluten</span></div>
+      <div class="hico"><span class="hico-emoji">🌿</span><span class="hico-label" data-es="Orgánico" data-en="Organic">Orgánico</span></div>
+      <div class="hico"><span class="hico-emoji">💪</span><span class="hico-label" data-es="Proteína" data-en="Protein">Proteína</span></div>
+      <div class="hico"><span class="hico-emoji">🥗</span><span class="hico-label" data-es="100% Natural" data-en="100% Natural">100% Natural</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <div class="sec-label" data-key="menu_label">Lo que ofrecemos</div>
+  <h2 class="sec-title"><span data-key="menu_title">Nuestro Menú</span></h2>
+  <p class="sec-sub" data-key="menu_sub">Todo preparado a mano con ingredientes frescos y naturales</p>
+  <div class="menu-section-label" data-key="alimentos_title">🌾 Nuestros Alimentos</div>
+  <p class="menu-section-sub" data-key="alimentos_sub">Arepas y tortillas sin gluten, hechas a mano con yuca fresca.</p>
+  <div class="menu-grid">
+    <div class="mc"><div class="mc-emoji">🫓</div><div class="mc-cat" data-es="Arepas · Sin Gluten" data-en="Arepas · Gluten Free">Arepas · Sin Gluten</div><div class="mc-name" data-es="Arepas de Yuca con Chía" data-en="Cassava & Chia Arepas">Arepas de Yuca con Chía</div><div class="mc-desc" data-es="Artesanales, ricas en fibra y antioxidantes. Perfectas para cualquier momento del día." data-en="Handmade, rich in fiber and antioxidants. Perfect for any time of day.">Artesanales, ricas en fibra y antioxidantes. Perfectas para cualquier momento del día.</div><div class="mc-footer"><div class="mc-price">$18<small>/6pk</small></div><button class="mc-btn" data-item="arepa-chia">+ Agregar</button></div></div>
+    <div class="mc"><div class="mc-emoji">🫓</div><div class="mc-cat" data-es="Arepas · Sin Gluten" data-en="Arepas · Gluten Free">Arepas · Sin Gluten</div><div class="mc-name" data-es="Arepas de Yuca y Plátano" data-en="Cassava & Plantain Arepas">Arepas de Yuca y Plátano</div><div class="mc-desc" data-es="Dulce natural del plátano maduro. Sin azúcares añadidos, sabor venezolano auténtico." data-en="Natural sweetness from ripe plantain. No added sugars, authentic flavor.">Dulce natural del plátano maduro. Sin azúcares añadidos, sabor venezolano auténtico.</div><div class="mc-footer"><div class="mc-price">$18<small>/6pk</small></div><button class="mc-btn" data-item="arepa-platano">+ Agregar</button></div></div>
+    <div class="mc"><div class="mc-emoji">🌮</div><div class="mc-cat" data-es="Tortillas · Sin Gluten" data-en="Tortillas · Gluten Free">Tortillas · Sin Gluten</div><div class="mc-name" data-es="Tortillas de Yuca y Plátano" data-en="Cassava & Plantain Tortillas">Tortillas de Yuca y Plátano</div><div class="mc-desc" data-es="Versátiles y deliciosas. Para tacos, wraps, o snack saludable." data-en="Versatile and delicious. Perfect for tacos, wraps, or a healthy snack.">Versátiles y deliciosas. Para tacos, wraps, o snack saludable.</div><div class="mc-footer"><div class="mc-price">$16<small>/8pk</small></div><button class="mc-btn" data-item="tortilla">+ Agregar</button></div></div>
+    <div class="mc"><div class="mc-emoji"><img src="empanada.jpg" alt="empanada" style="width:48px;height:48px;object-fit:contain;mix-blend-mode:multiply;"></div><div class="mc-cat" data-es="Empanadas" data-en="Empanadas">Empanadas</div><div class="mc-name" data-es="Empanadas de Espinaca y Queso Cottage" data-en="Spinach & Cottage Cheese Empanadas">Empanadas de Espinaca y Queso Cottage</div><div class="mc-desc" data-es="Rellenas de espinaca fresca y queso cottage. Ligeras, nutritivas y deliciosas." data-en="Filled with fresh spinach and cottage cheese. Light, nutritious and delicious.">Rellenas de espinaca fresca y queso cottage. Ligeras, nutritivas y sin gluten.</div><div class="mc-footer"><div class="mc-price">$15<small>/6pk</small></div><button class="mc-btn" data-item="emp-espinaca">+ Agregar</button></div></div>
+    <div class="mc"><div class="mc-emoji"><img src="empanada.jpg" alt="empanada" style="width:48px;height:48px;object-fit:contain;mix-blend-mode:multiply;"></div><div class="mc-cat" data-es="Empanadas" data-en="Empanadas">Empanadas</div><div class="mc-name" data-es="Empanadas de Carne Mechada" data-en="Shredded Beef Empanadas">Empanadas de Carne Mechada</div><div class="mc-desc" data-es="Rellenas con nuestra carne mechada artesanal. Sabor venezolano en cada bocado." data-en="Filled with our artisanal shredded beef. Rich, savory and homemade.">Rellenas con nuestra carne mechada artesanal. Sabor venezolano en cada bocado.</div><div class="mc-footer"><div class="mc-price">$25<small>/6pk</small></div><button class="mc-btn" data-item="emp-carne">+ Agregar</button></div></div>
+  </div>
+  
+
+  <div class="menu-section-label" style="margin-top:56px;" data-key="proteinas_title">💪 Proteínas</div>
+  
+  <div class="menu-grid">
+    <div class="mc"><div class="mc-emoji">🥩</div><div class="mc-cat" data-es="Proteína · Res" data-en="Protein · Beef">Proteína · Res</div><div class="mc-name" data-es="Carne Mechada" data-en="Shredded Beef">Carne Mechada</div><div class="mc-desc" data-es="Res mechada con especias naturales. Rica en proteína y sabor." data-en="Shredded beef with natural spices. Rich in protein and flavor.">Res mechada con especias naturales. Rica en proteína y sabor.</div><div class="mc-footer"><div class="mc-price">$25<small>/lb</small></div><button class="mc-btn" data-item="carne">+ Agregar</button></div></div>
+    <div class="mc"><div class="mc-emoji">🍗</div><div class="mc-cat" data-es="Proteína · Pollo" data-en="Protein · Chicken">Proteína · Pollo</div><div class="mc-name" data-es="Pollo Mechado" data-en="Shredded Chicken">Pollo Mechado</div><div class="mc-desc" data-es="Pollo mechado con especias naturales. Rico en proteína y sabor." data-en="Shredded chicken with natural spices. Rich in protein and flavor.">Pollo mechado con especias naturales. Rico en proteína y sabor.</div><div class="mc-footer"><div class="mc-price">$20<small>/lb</small></div><button class="mc-btn" data-item="pollo">+ Agregar</button></div></div>
+    <div class="mc"><div class="mc-emoji">🦃</div><div class="mc-cat" data-es="Proteína · Pavo" data-en="Protein · Turkey">Proteína · Pavo</div><div class="mc-name" data-es="Pavo Mechado" data-en="Shredded Turkey">Pavo Mechado</div><div class="mc-desc" data-es="Proteína pura sin grasa. La opción perfecta para tus metas fitness." data-en="Pure lean protein. The perfect choice for your fitness goals.">Proteína pura sin grasa. La opción perfecta para tus metas fitness.</div><div class="mc-footer"><div class="mc-price">$20<small>/lb</small></div><button class="mc-btn" data-item="pavo">+ Agregar</button></div></div>
+  </div>
+
+</section>
+
+
+
+
+<section class="about-section" id="nosotros">
+  <div class="about-photo"><img src="https://base44.app/api/apps/6a07ce0bd5944f632f6f429a/files/mp/public/6a07ce0bd5944f632f6f429a/f66b1b1c0_imessage_media_d33829934f46.png" alt="Chef Yoly"></div>
+  <div class="about-txt">
+    <div class="about-label" data-key="nosotros_label">Nuestra Historia</div>
+    <h2><span data-key="nosotros_h2">Sobre la</span><br><em style="color:#C8922A;font-style:italic;">Chef Yoly</em></h2>
+    <p data-key="about_p1">Soy Yolimar Quijano, fundadora de The Balanced Bite, chef apasionada por crear alimentos saludables, deliciosos y elaborados con ingredientes de alta calidad.</p>
+    <p data-key="about_p2">Nací en Venezuela, donde aprendí que la cocina es una forma de expresar amor, unir a la familia y preservar nuestras raíces. Hoy, esa pasión se refleja en cada receta que preparo.</p>
+    <p data-key="about_p3">En The Balanced Bite nos especializamos en la elaboración de comidas y productos <strong>100% libres de gluten (gluten-free)</strong>, preparados con ingredientes frescos, naturales y cuidadosamente seleccionados. Nuestra misión es demostrar que una alimentación saludable puede ser práctica, nutritiva y, sobre todo, llena de sabor.</p>
+    <p data-key="about_p4">Cada uno de nuestros productos está elaborado artesanalmente, sin gluten y con el auténtico sazón venezolano que llevo en mis manos, ofreciendo una opción ideal para quienes buscan cuidar su bienestar sin renunciar al placer de disfrutar una excelente comida.</p>
+    <p data-key="about_p5">Más que ofrecer alimentos, quiero brindar tranquilidad a mis clientes, ayudándolos a disfrutar de una alimentación saludable, conveniente y hecha con cariño.</p>
+    <p><em style="color:#C8922A;" data-key="about_closing">Bienvenidos a The Balanced Bite, donde cada bocado es libre de gluten, preparado con ingredientes de calidad, pasión y mucho corazón.</em></p>
+    <div class="about-badges">
+      <span class="abadge" data-key="badge_gluten">🌾 Sin Gluten</span>
+      <span class="abadge" data-key="badge_natural">🥗 100% Natural</span>
+      <span class="abadge" data-key="badge_protein">💪 Alto en Proteína</span>
+      <span class="abadge" data-key="badge_preserv">🚫 Sin Conservantes</span>
+    </div>
+    <div class="about-sig">— Chef Yoly</div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 The Balanced Bite by Chef Yoly · Houston, TX</span>
+  <span>832-540-2505</span>
+</footer>
+
+  
+
+  <!-- CART DRAWER -->
+  <div id="cart-drawer">
+    <div class="cart-header">
+      <span class="cart-title">Tu Pedido</span>
+      <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty" id="cart-empty">Tu carrito está vacío 🌿</div>
+    </div>
+    <div class="cart-total" id="cart-total" style="display:none;">
+      <div id="cart-tax" style="font-size:0.8rem;font-weight:500;color:#888;margin-bottom:4px;"></div>
+      <div>Total: $<span id="total-amount">0</span></div>
+    </div>
+    <a id="cart-wa-btn" class="cart-wa-btn" href="#" target="_blank">📲 Enviar pedido por WhatsApp</a>
+  </div>
+
+  <script>
+    const PHONE = "18325402505";
+
+    const MENU = {
+      "arepa-chia":     { name: "Arepas de Yuca con Chía",      price: 18, unit: "6pk" },
+      "arepa-platano":  { name: "Arepas de Yuca y Plátano",     price: 18, unit: "6pk" },
+      "tortilla":       { name: "Tortillas de Yuca y Plátano",  price: 16, unit: "8pk" },
+      "carne":          { name: "Carne Mechada",                 price: 25, unit: "lb"  },
+      "pollo":          { name: "Pollo Mechado",                 price: 20, unit: "lb"  },
+      "pavo":           { name: "Pavo Mechado",                  price: 20, unit: "lb"  },
+      "emp-espinaca":   { name: "Empanadas de Espinaca y Queso Cottage", price: 15, unit: "6pk" },
+      "emp-carne":      { name: "Empanadas de Carne Mechada",            price: 25, unit: "6pk" }
+    };
+
+    let cart = {};
+
+    function addToCart(name) {
+      cart[name] = (cart[name] || 0) + 1;
+      renderCart();
+      const drawer = document.getElementById("cart-drawer");
+      if (!drawer.classList.contains("open")) drawer.classList.add("open");
+    }
+
+    function changeQty(name, delta) {
+      if (!cart[name]) return;
+      cart[name] += delta;
+      if (cart[name] <= 0) delete cart[name];
+      renderCart();
+    }
+
+    function toggleCart() {
+      document.getElementById("cart-drawer").classList.toggle("open");
+      renderCart();
+    }
+
+    function renderCart() {
+      const items = Object.keys(cart);
+      const count = items.reduce((s, k) => s + cart[k], 0);
+
+      const badge = document.getElementById("nav-cart-count");
+      if (badge) badge.textContent = count;
+
+      const container = document.getElementById("cart-items");
+      const totalEl   = document.getElementById("cart-total");
+      const waBtn     = document.getElementById("cart-wa-btn");
+
+      if (!container) return;
+
+      if (items.length === 0) {
+        container.innerHTML = "<p style=\"text-align:center;color:#aaa;padding:24px 0;\">Tu carrito est\u00e1 vac\u00edo \uD83C\uDF3F</p>";
+        if (totalEl) totalEl.style.display = "none";
+        if (waBtn)   waBtn.href = "#";
+        return;
+      }
+
+      let subtotal = 0;
+      let html = "";
+      items.forEach(function(name) {
+        const item = MENU[name];
+        if (!item) return;
+        const qty = cart[name];
+        const sub = item.price * qty;
+        subtotal += sub;
+        const safe = encodeURIComponent(name);
+        html += "<div style=\"display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #F0E8D8;\">"
+          + "<div style=\"font-size:0.88rem;font-weight:600;color:var(--brown-dark);flex:1;\">" + item.name + "</div>"
+          + "<div style=\"display:flex;align-items:center;gap:8px;\">"
+          + "<button style=\"background:#F0E8D8;border:none;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer;font-weight:700;\" data-action=\"minus\" data-name=\"" + safe + "\">&#8722;</button>"
+          + "<span style=\"font-size:0.85rem;\">" + qty + " " + item.unit + "</span>"
+          + "<button style=\"background:#F0E8D8;border:none;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer;font-weight:700;\" data-action=\"plus\" data-name=\"" + safe + "\">+</button>"
+          + "</div>"
+          + "<div style=\"font-size:0.88rem;font-weight:700;color:#444932;min-width:48px;text-align:right;\">$" + sub.toFixed(2) + "</div>"
+          + "</div>";
+      });
+      container.innerHTML = html;
+
+      const tax = Math.round(subtotal * 0.0825 * 100) / 100;
+      const grand = Math.round((subtotal + tax) * 100) / 100;
+
+      if (totalEl) {
+        totalEl.style.display = "block";
+        totalEl.innerHTML = "<div style=\"font-size:0.75rem;color:#999;margin-bottom:2px;\">Tax (8.25%): $" + tax.toFixed(2) + "</div>"
+          + "<div style=\"font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--brown-dark);\">Total: $" + grand.toFixed(2) + "</div>"
+          
+      }
+
+      if (waBtn) {
+        let msg = "\uD83D\uDED2 *Hola Chef Yoly, quiero hacer un pedido:*\n\n";
+        items.forEach(function(name) {
+          const item = MENU[name]; if (!item) return;
+          msg += "\u2022 " + item.name + " x" + cart[name] + " " + item.unit + " \u2014 $" + (item.price * cart[name]).toFixed(2) + "\n";
+        });
+        msg += "\n*Subtotal: $" + subtotal.toFixed(2) + "*";
+        msg += "\n*Impuesto (8.25%): $" + tax.toFixed(2) + "*";
+        msg += "\n*Total: $" + grand.toFixed(2) + "*";
+        msg += "\n\n\uD83D\uDCB3 *Pago por Zelle:* 832-540-2505\nPor favor env\u00EDame una captura de pantalla del pago por Zelle para confirmar tu pedido \uD83D\uDE4F";
+        msg += "\n\n\uD83D\uDE9A Podemos hacer *entrega a domicilio* o puedes *pasar por la casa* a recoger tu pedido. \u00A1D\u00EDnos qu\u00E9 prefieres!\n\n\u00A1Gracias!";
+        waBtn.href = "https://wa.me/18325402505?text=" + encodeURIComponent(msg);
+      }
+    }
+  </script>
+
+
+  <script>
+    // Rotating words
+    const words = ["🌿 Orgánico","💚 Saludable","🌾 Natural","🇻🇪 Venezolano","✨ Artesanal"];
+    let wi = 0;
+    function rotateWord(){
+      const el = document.getElementById('rotating-word');
+      if(!el) return;
+      el.style.opacity='0';
+      setTimeout(()=>{ wi=(wi+1)%words.length; el.textContent=words[wi]; el.style.opacity='1'; },300);
+    }
+    setInterval(rotateWord, 2000);
+
+    // Language toggle — default Spanish
+    const translations = {
+      nav_menu:       {es:"Menú",                        en:"Menu"},
+      nav_nosotros:   {es:"Nosotros",                    en:"About"},
+      nav_catering:   {es:"Catering",                    en:"Catering"},
+      nav_pedido:     {es:"Ver Carrito / Hacer Pedido",  en:"View Cart / Order"},
+      nav_ordenar:    {es:"📲 Ordenar",                   en:"📲 Order"},
+      hero_sub:       {es:"El Bocado Balanceado by Chef Yoly", en:"The Balanced Bite by Chef Yoly"},
+      hero_desc:      {es:"En The Balanced Bite, creemos que comer saludable debe ser delicioso, práctico y nutritivo. Elaboramos cada producto con ingredientes reales, libres de gluten, sin químicos, aditivos ni preservativos. Desde comidas listas para disfrutar hasta opciones congeladas, ofrecemos alimentos preparados con calidad, sabor y dedicación. Nuestra misión es ayudarte a disfrutar una alimentación equilibrada sin renunciar al placer de comer bien.",
+                       en:"At The Balanced Bite, we believe healthy eating should be delicious, practical and nutritious. Every product is made with real, gluten-free ingredients — no chemicals, additives or preservatives. From ready-to-eat meals to frozen options, we offer food made with quality, flavor and dedication."},
+      btn_pedido:     {es:"Hacer Pedido / Ver Carrito",  en:"Place Order / View Cart"},
+      btn_menu:       {es:"Ver Menú",                    en:"View Menu"},
+      menu_label:     {es:"Lo que ofrecemos",            en:"What we offer"},
+      menu_title:     {es:"Nuestro Menú",                en:"Our Menu"},
+      menu_sub:       {es:"Todo preparado a mano con ingredientes frescos y naturales", en:"Everything handmade with fresh, natural ingredients"},
+      alimentos_title:{es:"🌾 Nuestros Alimentos",        en:"🌾 Our Foods"},
+      alimentos_sub:  {es:"Arepas y tortillas sin gluten, hechas a mano con yuca fresca.", en:"Gluten-free arepas and tortillas, handmade with fresh yuca."},
+      proteinas_title:{es:"💪 Proteínas",                 en:"💪 Proteins"},
+      proteinas_sub:  {es:"Carnes mechadas sabor casero. Solo proteína, sin rellenos ni conservantes.", en:"Home-style shredded meats. Pure protein, no fillers or preservatives."},
+      nosotros_label: {es:"Nuestra Historia",            en:"Our Story"},
+      nosotros_title: {es:"By Yoly",                     en:"By Yoly"},
+      nosotros_h2:    {es:"Sobre la",                    en:"About"},
+      about_p1:       {es:"Soy Yolimar Quijano, fundadora de The Balanced Bite, chef apasionada por crear alimentos saludables, deliciosos y elaborados con ingredientes de alta calidad.",
+                       en:"I am Yolimar Quijano, founder of The Balanced Bite — a chef passionate about creating healthy, delicious food made with high-quality ingredients."},
+      about_p2:       {es:"Nací en Venezuela, donde aprendí que la cocina es una forma de expresar amor, unir a la familia y preservar nuestras raíces. Hoy, esa pasión se refleja en cada receta que preparo.",
+                       en:"I was born in Venezuela, where I learned that cooking is a way to express love, bring family together and preserve our roots. Today, that passion is reflected in every recipe I make."},
+      about_p3:       {es:"En The Balanced Bite nos especializamos en la elaboración de comidas y productos 100% libres de gluten (gluten-free), preparados con ingredientes frescos, naturales y cuidadosamente seleccionados. Nuestra misión es demostrar que una alimentación saludable puede ser práctica, nutritiva y, sobre todo, llena de sabor.",
+                       en:"At The Balanced Bite we specialize in 100% gluten-free foods, made with fresh, natural, carefully selected ingredients. Our mission is to prove that healthy eating can be practical, nutritious and full of flavor."},
+      about_p4:       {es:"Cada uno de nuestros productos está elaborado artesanalmente, sin gluten y con el auténtico sazón venezolano que llevo en mis manos, ofreciendo una opción ideal para quienes buscan cuidar su bienestar sin renunciar al placer de disfrutar una excelente comida.",
+                       en:"Every one of our products is handcrafted, gluten-free and made with the authentic Venezuelan seasoning I carry in my hands — the perfect option for those who want to care for their well-being without giving up the pleasure of great food."},
+      about_p5:       {es:"Más que ofrecer alimentos, quiero brindar tranquilidad a mis clientes, ayudándolos a disfrutar de una alimentación saludable, conveniente y hecha con cariño.",
+                       en:"More than offering food, I want to bring peace of mind to my customers — helping them enjoy healthy, convenient meals made with love."},
+      about_closing:  {es:"Bienvenidos a The Balanced Bite, donde cada bocado es libre de gluten, preparado con ingredientes de calidad, pasión y mucho corazón.",
+                       en:"Welcome to The Balanced Bite, where every bite is gluten-free, prepared with quality ingredients, passion and lots of heart."},
+      badge_gluten:   {es:"🌾 Sin Gluten",               en:"🌾 Gluten Free"},
+      badge_natural:  {es:"🥗 100% Natural",             en:"🥗 100% Natural"},
+      badge_protein:  {es:"💪 Alto en Proteína",         en:"💪 High Protein"},
+      badge_preserv:  {es:"🚫 Sin Conservantes",         en:"🚫 No Preservatives"},
+      footer_rights:  {es:"Todos los derechos reservados", en:"All rights reserved"},
+    };
+    let currentLang = 'es';
+    function setLang(lang){
+      currentLang = lang;
+
+      // Handle data-key system
+      document.querySelectorAll('[data-key]').forEach(el=>{
+        const key = el.getAttribute('data-key');
+        if(translations[key] && translations[key][lang]) el.innerHTML = translations[key][lang];
+      });
+
+      // Handle data-es / data-en (new system) — covers all text, buttons, labels
+      document.querySelectorAll('[data-es][data-en]').forEach(el=>{
+        el.textContent = el.getAttribute('data-' + lang) || el.getAttribute('data-es');
+      });
+
+      // Nav toggle weight + opacity (active = bold + full opacity, inactive = faded)
+      document.getElementById('lang-es').style.fontWeight = lang==='es'?'800':'400';
+      document.getElementById('lang-es').style.opacity   = lang==='es'?'1':'0.45';
+      document.getElementById('lang-en').style.fontWeight = lang==='en'?'800':'400';
+      document.getElementById('lang-en').style.opacity   = lang==='en'?'1':'0.45';
+    }
+  </script>
+
+
+  <script>
+    document.addEventListener("click", function(e) {
+      var t = e.target;
+      if (t.classList.contains("mc-btn") && t.dataset.item) {
+        addToCart(t.dataset.item);
+        return;
+      }
+      if (t.dataset.action && t.dataset.name) {
+        var name = decodeURIComponent(t.dataset.name);
+        var delta = t.dataset.action === "minus" ? -1 : 1;
+        changeQty(name, delta);
+        return;
+      }
+    });
+  </script>
+
+  <script>
+    function toggleMobileMenu(){
+      const mn = document.getElementById('mobile-nav');
+      mn.classList.toggle('open');
+    }
+    function closeMobileMenu(){
+      document.getElementById('mobile-nav').classList.remove('open');
+    }
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e){
+      const burger = document.getElementById('burger');
+      const mn = document.getElementById('mobile-nav');
+      if(mn.classList.contains('open') && !mn.contains(e.target) && !burger.contains(e.target)){
+        mn.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
